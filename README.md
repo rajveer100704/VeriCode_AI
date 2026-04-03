@@ -10,17 +10,45 @@ Each guide has two tiers:
 - **Top**: Curated patterns, gotchas, and project-specific usage (written by you or your AI)
 - **Bottom**: Full API reference, machine-generated from the source of truth
 
-## Quick Start
+## Install
+
+Add the marketplace and install the plugin from within Claude Code:
+
+```
+/plugin marketplace add zeapo/docvault
+/plugin install vendored-docs@docvault
+```
+
+This gives Claude the skill to generate, find, and use vendored docs automatically. You can install at user scope (default, works across all your projects) or project scope (`--scope project`, shared with collaborators).
+
+After installing, run `/reload-plugins` if you're in an active session.
+
+### Prompting tips
+
+The plugin triggers automatically on phrases like "vendor docs for", "how do I use", or "what's the API for". But you can also be direct:
+
+```
+vendor docs for tokio
+document the jax package
+look up crate serde
+```
+
+Once docs exist in your repo, Claude checks them before reaching for the internet. You don't need to tell it to — the skill handles that. If you want to add curated patterns on top of a generated reference, just ask:
+
+```
+add common patterns to the tokio docs
+add gotchas to the jax guide
+```
+
+## Quick Start (manual)
+
+If you prefer to run the scripts directly without the plugin, they live in `plugin/skills/vendored-docs/scripts/`:
 
 ### Rust crates
 
 ```bash
-# Copy scripts to your project
-cp scripts/rustdoc-json-to-md.py /path/to/your/project/scripts/
-
-# Generate docs (resolves version from Cargo.lock, runs cargo rustdoc, converts)
-python3 scripts/rustdoc-json-to-md.py datafusion
-python3 scripts/rustdoc-json-to-md.py iceberg-datafusion 0.9.0
+python3 path/to/rustdoc-json-to-md.py datafusion
+python3 path/to/rustdoc-json-to-md.py iceberg-datafusion 0.9.0
 ```
 
 Requires `rustup toolchain install nightly` (stable stays your default).
@@ -28,13 +56,9 @@ Requires `rustup toolchain install nightly` (stable stays your default).
 ### Python packages
 
 ```bash
-# Copy scripts to your project
-cp scripts/pydoc-to-md.py /path/to/your/project/scripts/
-
-# Generate docs (imports package, walks API via inspect)
-python3 scripts/pydoc-to-md.py jax
-python3 scripts/pydoc-to-md.py optax --depth 1
-python3 scripts/pydoc-to-md.py jax --include numpy --include random
+python3 path/to/pydoc-to-md.py jax
+python3 path/to/pydoc-to-md.py optax --depth 1
+python3 path/to/pydoc-to-md.py jax --include numpy --include random
 ```
 
 Must run with a Python environment where the package is installed.
@@ -60,31 +84,24 @@ docs/vendored/
 ### `rustdoc-json-to-md.py`
 
 ```
-python3 scripts/rustdoc-json-to-md.py CRATE [VERSION]   Full pipeline
-python3 scripts/rustdoc-json-to-md.py CRATE --skip-build Reuse existing JSON
-python3 scripts/rustdoc-json-to-md.py --json FILE        Convert existing JSON
-python3 scripts/rustdoc-json-to-md.py CRATE --only-index Compact index
-python3 scripts/rustdoc-json-to-md.py CRATE --stdout     Write to stdout
-python3 scripts/rustdoc-json-to-md.py CRATE -o PATH      Custom output path
+rustdoc-json-to-md.py CRATE [VERSION]   Full pipeline
+rustdoc-json-to-md.py CRATE --skip-build Reuse existing JSON
+rustdoc-json-to-md.py --json FILE        Convert existing JSON
+rustdoc-json-to-md.py CRATE --only-index Compact index
+rustdoc-json-to-md.py CRATE --stdout     Write to stdout
+rustdoc-json-to-md.py CRATE -o PATH      Custom output path
 ```
 
 ### `pydoc-to-md.py`
 
 ```
-python3 scripts/pydoc-to-md.py PKG [VERSION]        Full pipeline
-python3 scripts/pydoc-to-md.py PKG --depth N         Sub-module depth (default: 2)
-python3 scripts/pydoc-to-md.py PKG --include MOD     Only specific sub-modules
-python3 scripts/pydoc-to-md.py PKG --only-index      Compact index
-python3 scripts/pydoc-to-md.py PKG --stdout          Write to stdout
-python3 scripts/pydoc-to-md.py PKG -o PATH           Custom output path
+pydoc-to-md.py PKG [VERSION]        Full pipeline
+pydoc-to-md.py PKG --depth N         Sub-module depth (default: 2)
+pydoc-to-md.py PKG --include MOD     Only specific sub-modules
+pydoc-to-md.py PKG --only-index      Compact index
+pydoc-to-md.py PKG --stdout          Write to stdout
+pydoc-to-md.py PKG -o PATH           Custom output path
 ```
-
-## Claude Code Skill
-
-Copy `.claude/skills/vendored-docs.md` to your project's `.claude/skills/` directory. This teaches Claude to:
-1. **Check vendored docs before the internet** when looking up any API
-2. **Generate new guides** when asked ("vendor docs for X")
-3. **Add curated content** (patterns, gotchas) on top of the machine-generated reference
 
 ## How It Works
 

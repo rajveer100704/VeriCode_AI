@@ -30,44 +30,27 @@ Only reach for the internet if no vendored guide exists or it doesn't cover the 
 
 ---
 
-## Setup
-
-The vendored-docs scripts must be installed in the project. Check if they exist:
-
-```bash
-ls scripts/rustdoc-json-to-md.py scripts/pydoc-to-md.py 2>/dev/null
-```
-
-If not found, install them:
-
-```bash
-mkdir -p scripts
-curl -sL -o scripts/rustdoc-json-to-md.py https://raw.githubusercontent.com/zeapo/docvault/main/scripts/rustdoc-json-to-md.py
-curl -sL -o scripts/pydoc-to-md.py https://raw.githubusercontent.com/zeapo/docvault/main/scripts/pydoc-to-md.py
-chmod +x scripts/rustdoc-json-to-md.py scripts/pydoc-to-md.py
-```
-
----
-
 ## Generating docs
+
+The scripts are bundled with this plugin — no need to copy them into your project.
 
 ### Rust crates
 
 ```bash
 # Full pipeline: resolve version from Cargo.lock, generate rustdoc JSON, convert
-python3 scripts/rustdoc-json-to-md.py {CRATE_NAME}
+python3 ${CLAUDE_SKILL_DIR}/scripts/rustdoc-json-to-md.py {CRATE_NAME}
 
 # Explicit version
-python3 scripts/rustdoc-json-to-md.py {CRATE_NAME} {VERSION}
+python3 ${CLAUDE_SKILL_DIR}/scripts/rustdoc-json-to-md.py {CRATE_NAME} {VERSION}
 
 # Reuse existing JSON (faster re-runs)
-python3 scripts/rustdoc-json-to-md.py {CRATE_NAME} --skip-build
+python3 ${CLAUDE_SKILL_DIR}/scripts/rustdoc-json-to-md.py {CRATE_NAME} --skip-build
 
 # Convert existing JSON file directly
-python3 scripts/rustdoc-json-to-md.py --json target/doc/{CRATE}.json
+python3 ${CLAUDE_SKILL_DIR}/scripts/rustdoc-json-to-md.py --json target/doc/{CRATE}.json
 
 # Compact index or stdout
-python3 scripts/rustdoc-json-to-md.py {CRATE} --only-index --stdout
+python3 ${CLAUDE_SKILL_DIR}/scripts/rustdoc-json-to-md.py {CRATE} --only-index --stdout
 ```
 
 Requires nightly toolchain: `rustup toolchain install nightly` (won't change your default).
@@ -76,17 +59,17 @@ Requires nightly toolchain: `rustup toolchain install nightly` (won't change you
 
 ```bash
 # Must use a Python env where the package is installed
-python3 scripts/pydoc-to-md.py {PACKAGE}
+python3 ${CLAUDE_SKILL_DIR}/scripts/pydoc-to-md.py {PACKAGE}
 
 # Explicit version
-python3 scripts/pydoc-to-md.py {PACKAGE} {VERSION}
+python3 ${CLAUDE_SKILL_DIR}/scripts/pydoc-to-md.py {PACKAGE} {VERSION}
 
 # Control depth and scope
-python3 scripts/pydoc-to-md.py {PACKAGE} --depth 1
-python3 scripts/pydoc-to-md.py {PACKAGE} --include numpy --include random
+python3 ${CLAUDE_SKILL_DIR}/scripts/pydoc-to-md.py {PACKAGE} --depth 1
+python3 ${CLAUDE_SKILL_DIR}/scripts/pydoc-to-md.py {PACKAGE} --include numpy --include random
 
 # Compact index or stdout
-python3 scripts/pydoc-to-md.py {PACKAGE} --only-index --stdout
+python3 ${CLAUDE_SKILL_DIR}/scripts/pydoc-to-md.py {PACKAGE} --only-index --stdout
 ```
 
 Both scripts use `-o PATH` to override the output path. Defaults: `docs/vendored/rust/{name}-{version}.md` (Rust) and `docs/vendored/python/{name}-{version}.md` (Python).
