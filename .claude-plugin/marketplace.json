@@ -1,0 +1,11 @@
+{
+  "name": "docvault",
+  "owner": { "name": "zeapo" },
+  "plugins": [
+    {
+      "name": "vendored-docs",
+      "source": "./plugin",
+      "description": "Vendor library documentation locally for AI-assisted development"
+    }
+  ]
+}

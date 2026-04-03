@@ -1,0 +1,5 @@
+{
+  "name": "vendored-docs",
+  "description": "Vendor library documentation locally for AI-assisted development. Converts Rust crates (via rustdoc JSON) and Python packages (via runtime introspection) into structured Markdown API references.",
+  "version": "0.1.0"
+}
