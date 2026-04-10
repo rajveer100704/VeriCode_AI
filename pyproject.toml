@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vericode-ai"
+version = "0.1.0"
+description = "Ground-Truth AI Coding Engine"
+authors = [{ name = "VeriCode AI", email = "hello@vericode.ai" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "sentence-transformers",
+    "faiss-cpu",
+    "openai",
+    "google-generativeai",
+    "pydantic",
+    "structlog"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "isort",
+    "flake8"
+]
